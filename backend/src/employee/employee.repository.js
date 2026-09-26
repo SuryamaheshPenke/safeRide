@@ -95,30 +95,38 @@ class EmployeeRepository {
     };
 }
 
-    async findById(id) {
-        return prisma.employee.findUnique({
-            where: {
-                id: Number(id)
-            },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        phone: true,
-                        isVerified: true,
-                        lastLogin: true,
-                        status: true,
-                        roleId: true,
-                        companyId: true,
-                        createdAt: true,
-                        updatedAt: true
-                    }
+    async findById(id, role, companyId) {
+    const where = {
+        id: Number(id)
+    };
+
+    if (role === "COMPANY_ADMIN") {
+        where.user = {
+            companyId: Number(companyId)
+        };
+    }
+
+    return prisma.employee.findFirst({
+        where,
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    isVerified: true,
+                    lastLogin: true,
+                    status: true,
+                    roleId: true,
+                    companyId: true,
+                    createdAt: true,
+                    updatedAt: true
                 }
-}
-        });
+            }
+        }
+    });
     }
 
     async update(id, data) {

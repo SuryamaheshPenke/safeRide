@@ -58,7 +58,11 @@ class EmployeeController {
 
             try {
 
-                const employee = await employeeService.getById(req.params.id);
+                const employee = await employeeService.getById(
+                    req.params.id,
+                    req.user.role,
+                    req.user.companyId
+                );
 
                 res.status(200).json({
                     success: true,

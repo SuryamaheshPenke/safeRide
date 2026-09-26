@@ -16,8 +16,12 @@ class EmployeeService {
     );
     }
 
-    async getById(id) {
-        return employeeRepository.findById(id);
+    async getById(id, role, companyId) {
+    return employeeRepository.findById(
+        id,
+        role,
+        companyId
+    );
     }
 
     async update(id, data) {
