@@ -8,8 +8,32 @@ class DriverRepository {
         });
     }
 
-    async findAll() {
-        return prisma.driver.findMany();
+    async findAll(role, companyId) {
+    const where = {};
+
+    if (role === "COMPANY_ADMIN") {
+        where.user = {
+            companyId: Number(companyId)
+        };
+    }
+
+    return prisma.driver.findMany({
+        where,
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    roleId: true,
+                    companyId: true,
+                    status: true
+                }
+            }
+        }
+    });
     }
 
     async findById(id) {

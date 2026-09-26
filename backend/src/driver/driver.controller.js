@@ -22,7 +22,10 @@ class DriverController {
 
     async getAll(req, res) {
         try {
-            const drivers = await driverService.getAll();
+            const drivers = await driverService.getAll(
+                req.user.role,
+                req.user.companyId
+            );
 
             res.status(200).json({
                 success: true,

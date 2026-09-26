@@ -6,8 +6,8 @@ class DriverService {
         return driverRepository.create(data);
     }
 
-    async getAll() {
-        return driverRepository.findAll();
+    async getAll(role, companyId) {
+    return driverRepository.findAll(role, companyId);
     }
 
     async getById(id) {
