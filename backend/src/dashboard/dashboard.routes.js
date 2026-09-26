@@ -11,7 +11,11 @@ const dashboardController = require("./dashboard.controller");
 router.get(
     "/summary",
     authenticate,
-    authorize("SUPER_ADMIN", "ADMIN"),
+    authorize(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+    "TRANSPORT_MANAGER"
+),
     dashboardController.getSummary
 );
 
@@ -19,7 +23,11 @@ router.get(
 router.get(
     "/trips/today",
     authenticate,
-    authorize("SUPER_ADMIN", "ADMIN"),
+    authorize(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+    "TRANSPORT_MANAGER"
+),
     dashboardController.getTodaysTrips
 );
 
@@ -27,7 +35,11 @@ router.get(
 router.get(
     "/active-trips",
     authenticate,
-    authorize("SUPER_ADMIN", "ADMIN"),
+    authorize(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+    "TRANSPORT_MANAGER"
+),
     dashboardController.getActiveTrips
 );
 
@@ -35,7 +47,11 @@ router.get(
 router.get(
     "/drivers/status",
     authenticate,
-    authorize("SUPER_ADMIN", "ADMIN"),
+    authorize(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+    "TRANSPORT_MANAGER"
+),
     dashboardController.getDriverStatus
 );
 
@@ -43,7 +59,11 @@ router.get(
 router.get(
     "/vehicles/status",
     authenticate,
-    authorize("SUPER_ADMIN", "ADMIN"),
+    authorize(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+    "TRANSPORT_MANAGER"
+),
     dashboardController.getVehicleStatus
 );
 
