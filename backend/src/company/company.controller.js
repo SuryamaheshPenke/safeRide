@@ -6,7 +6,10 @@ class CompanyController {
 
         try {
 
-            const companies = await companyService.getCompanies();
+            const companies = await companyService.getCompanies(
+                req.user.role,
+                req.user.companyId
+            );
 
             res.status(200).json({
                 success: true,

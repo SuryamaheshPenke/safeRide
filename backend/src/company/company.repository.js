@@ -2,13 +2,19 @@ const prisma = require("../config/prisma");
 
 class CompanyRepository {
 
-    async getAll() {
-        return prisma.company.findMany({
-            orderBy: {
-                id: "asc"
-            }
-        });
-    }
+    async getAll(role, companyId) {
+    return prisma.company.findMany({
+        where:
+            role === "COMPANY_ADMIN"
+                ? {
+                    id: Number(companyId)
+                }
+                : undefined,
+        orderBy: {
+            id: "asc"
+        }
+    });
+}
 
     async getById(id) {
         return prisma.company.findUnique({

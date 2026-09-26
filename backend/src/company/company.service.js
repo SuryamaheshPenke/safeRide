@@ -2,9 +2,9 @@ const companyRepository = require("./company.repository");
 
 class CompanyService {
 
-    async getCompanies() {
-        return companyRepository.getAll();
-    }
+    async getCompanies(role, companyId) {
+    return companyRepository.getAll(role, companyId);
+}
 
     async createCompany(data) {
 
