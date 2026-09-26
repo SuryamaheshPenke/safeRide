@@ -88,13 +88,15 @@ router.put(
     "/:tripId/employees/:employeeId/drop",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
     tripIdValidation,
     employeeIdValidation,
     validate,
+    verifyDriverTripOwnership,
     driverTripController.dropEmployee
 );
 
