@@ -53,12 +53,14 @@ router.get(
     "/:id/employees",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
     idValidation,
     validate,
+    verifyDriverTripOwnership,
     driverTripController.getTripEmployees
 );
 
