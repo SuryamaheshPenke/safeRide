@@ -11,7 +11,7 @@ const tripEmployeeController = require("./tripEmployee.controller");
 router.get(
     "/",
     authenticate,
-    authorize("ADMIN", "SUPER_ADMIN", "DRIVER"),
+    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER", "DRIVER"),
     tripEmployeeController.getAll
 );
 
@@ -19,7 +19,7 @@ router.get(
 router.post(
     "/",
     authenticate,
-    authorize("ADMIN", "SUPER_ADMIN"),
+    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     tripEmployeeController.assignEmployee
 );
 
@@ -27,7 +27,7 @@ router.post(
 router.get(
     "/:id",
     authenticate,
-    authorize("ADMIN", "SUPER_ADMIN", "DRIVER"),
+    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER", "DRIVER"),
     idValidation,
     validate,
     tripEmployeeController.getById
@@ -36,7 +36,7 @@ router.get(
 router.put(
     "/:id",
     authenticate,
-    authorize("ADMIN", "SUPER_ADMIN"),
+    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     idValidation,
     validate,
     tripEmployeeController.update
@@ -45,10 +45,9 @@ router.put(
 router.delete(
     "/:id",
     authenticate,
-    authorize("ADMIN", "SUPER_ADMIN"),
+    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     idValidation,
     validate,
     tripEmployeeController.delete
 );
-
 module.exports = router;
