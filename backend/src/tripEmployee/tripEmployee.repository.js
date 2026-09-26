@@ -66,15 +66,25 @@ class TripEmployeeRepository {
 
 
     // GET ALL
-    async findAll() {
+   async findAll(driverId) {
 
-        return prisma.tripEmployee.findMany({
-            include: {
-                trip: true,
-                employee: true
+    return prisma.tripEmployee.findMany({
+        where: driverId
+            ? {
+                trip: {
+                    driverId: Number(driverId)
+                }
             }
-        });
-    }
+            : undefined,
+        include: {
+            trip: true,
+            employee: true
+        },
+        orderBy: {
+            id: "asc"
+        }
+    });
+}
 
 
     // GET BY ID
