@@ -50,6 +50,7 @@ router.get(
     authorize("DRIVER", "SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     tripIdValidation,
     validate,
+    verifyDriverTripOwnership,
     tripLocationController.getLatestByTripId
 );
 
