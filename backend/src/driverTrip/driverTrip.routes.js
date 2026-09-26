@@ -106,12 +106,14 @@ router.put(
     "/:id/complete",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
     idValidation,
     validate,
+    verifyDriverTripOwnership,
     driverTripController.completeTrip
 );
 
