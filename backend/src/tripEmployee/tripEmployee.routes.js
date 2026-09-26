@@ -6,12 +6,16 @@ const authorize = require("../middleware/role.middleware");
 const validate = require("../middleware/validate.middleware");
 const { idValidation } = require("../validators/id.validator");
 const tripEmployeeController = require("./tripEmployee.controller");
+const verifyTripEmployeeOwnership = require("../middleware/tripEmployeeOwnership.middleware");
+const loadDriverAccount = require("../middleware/driverAccount.middleware");
+
 
 // Get all trip employee assignments
 router.get(
     "/",
     authenticate,
     authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER", "DRIVER"),
+    loadDriverAccount,
     tripEmployeeController.getAll
 );
 
@@ -30,6 +34,7 @@ router.get(
     authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER", "DRIVER"),
     idValidation,
     validate,
+    verifyTripEmployeeOwnership,
     tripEmployeeController.getById
 );
 

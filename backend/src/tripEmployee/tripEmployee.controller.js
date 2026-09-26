@@ -26,26 +26,25 @@ class TripEmployeeController {
     }
 
     async getAll(req, res) {
+    try {
+        const driverId =
+            req.user.role === "DRIVER"
+                ? req.driver.id
+                : undefined;
 
-        try {
+        const assignments = await tripEmployeeService.getAll(driverId);
 
-            const data = await tripEmployeeService.getAll();
-
-            res.status(200).json({
-                success: true,
-                data
-            });
-
-        } catch (error) {
-
-            res.status(500).json({
-                success: false,
-                message: error.message
-            });
-
-        }
-
+        return res.status(200).json({
+            success: true,
+            data: assignments
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
+}
 
     async getById(req, res) {
 

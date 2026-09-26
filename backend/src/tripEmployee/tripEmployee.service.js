@@ -6,9 +6,9 @@ class TripEmployeeService {
         return tripEmployeeRepository.create(data);
     }
 
-    async getAll() {
-        return tripEmployeeRepository.findAll();
-    }
+    async getAll(driverId) {
+    return tripEmployeeRepository.findAll(driverId);
+}
 
     async getById(id) {
         return tripEmployeeRepository.findById(id);
