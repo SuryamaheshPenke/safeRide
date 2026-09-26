@@ -10,7 +10,10 @@ const companyController = require("./company.controller");
 router.get(
     "/",
     authenticate,
-    authorize("ADMIN", "SUPER_ADMIN"),
+    authorize(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+),
     companyController.getCompanies
 );
 
