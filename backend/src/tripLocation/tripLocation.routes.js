@@ -32,9 +32,15 @@ router.post(
 router.get(
     "/trip/:tripId",
     authenticate,
-    authorize("DRIVER", "SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
+    authorize(
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
     tripIdValidation,
     validate,
+    verifyDriverTripOwnership,
     tripLocationController.getByTripId
 );
 
