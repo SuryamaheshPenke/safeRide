@@ -4,6 +4,7 @@ const router = express.Router();
 
 const authenticate = require("../middleware/auth.middleware");
 const authorize = require("../middleware/role.middleware");
+const verifyDriverTripOwnership = require("../middleware/driverOwnership.middleware");
 
 const validate = require("../middleware/validate.middleware");
 const { tripIdValidation } = require("../validators/id.validator");
@@ -18,9 +19,13 @@ const {
 router.post(
     "/",
     authenticate,
-    authorize("DRIVER", "SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
-    createTripLocationValidation,
-    validate,
+    authorize(
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
+    verifyDriverTripOwnership,
     tripLocationController.create
 );
 

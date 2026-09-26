@@ -6,7 +6,9 @@ async function verifyDriverTripOwnership(req, res, next) {
                 return next();
             }
         const tripId = Number(
-            req.params.tripId || req.params.id
+            req.params.tripId ||
+            req.params.id ||
+            req.body.tripId
         );
 
         
