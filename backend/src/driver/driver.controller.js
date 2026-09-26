@@ -91,6 +91,26 @@ class DriverController {
             });
         }
     }
+    async linkUser(req, res) {
+    try {
+        const driver = await driverService.linkUser(
+            req.params.id,
+            req.body.userId
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Driver linked to user successfully.",
+            data: driver
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
 }
 
 module.exports = new DriverController();

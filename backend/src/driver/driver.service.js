@@ -21,6 +21,9 @@ class DriverService {
     async delete(id) {
         return driverRepository.delete(id);
     }
+    async linkUser(driverId, userId) {
+    return driverRepository.linkUser(driverId, userId);
+    }
 }
 
 module.exports = new DriverService();

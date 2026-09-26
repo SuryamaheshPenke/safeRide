@@ -8,6 +8,7 @@ const authorize = require("../middleware/role.middleware");
 const driverController = require("./driver.controller");
 const validate = require("../middleware/validate.middleware");
 const { idValidation } = require("../validators/id.validator");
+const { linkUserValidation } = require("./driver.validator");
 
 // Create Driver
 router.post(
@@ -30,7 +31,20 @@ router.get(
     "TRANSPORT_MANAGER"),
     driverController.getAll
 );
-
+// Link Driver to User account
+router.put(
+    "/:id/link-user",
+    authenticate,
+    authorize(
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
+    idValidation,
+    linkUserValidation,
+    validate,
+    driverController.linkUser
+);
 // Get Driver By ID
 router.get(
     "/:id",
