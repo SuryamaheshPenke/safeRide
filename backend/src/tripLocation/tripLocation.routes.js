@@ -18,17 +18,16 @@ const {
 router.post(
     "/",
     authenticate,
-    authorize("DRIVER", "ADMIN", "SUPER_ADMIN"),
+    authorize("DRIVER", "SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     createTripLocationValidation,
     validate,
     tripLocationController.create
 );
 
-
 router.get(
     "/trip/:tripId",
     authenticate,
-    authorize("DRIVER", "ADMIN", "SUPER_ADMIN"),
+    authorize("DRIVER", "SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     tripIdValidation,
     validate,
     tripLocationController.getByTripId
@@ -37,7 +36,7 @@ router.get(
 router.get(
     "/trip/:tripId/latest",
     authenticate,
-    authorize("DRIVER", "ADMIN", "SUPER_ADMIN"),
+    authorize("DRIVER", "SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
     tripIdValidation,
     validate,
     tripLocationController.getLatestByTripId
