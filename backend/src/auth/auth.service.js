@@ -11,11 +11,17 @@ class AuthService {
 
         const exists = await authRepository.findByEmail(data.email);
 
-        if (exists) {
-            throw new Error("Email already exists");
-        }
+    if (exists) {
+        throw new Error("Email already exists");
+    }
 
-        const hashedPassword = await hashPassword(data.password);
+    const phoneExists = await authRepository.findByPhone(data.phone);
+
+    if (phoneExists) {
+        throw new Error("Phone number already exists");
+    }
+
+    const hashedPassword = await hashPassword(data.password);
 
         const user = await authRepository.create({
 
