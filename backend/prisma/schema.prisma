@@ -66,6 +66,7 @@ model User {
   company   Company @relation(fields: [companyId], references: [id])
 
   employee Employee?
+  driver   Driver?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -149,8 +150,7 @@ model Driver {
   id Int @id @default(autoincrement())
 
   firstName String
-
-  lastName String
+  lastName  String
 
   phone String @unique
 
@@ -165,6 +165,9 @@ model Driver {
   status DriverStatus @default(AVAILABLE)
 
   isActive Boolean @default(true)
+
+  userId Int?  @unique
+  user   User? @relation(fields: [userId], references: [id])
 
   trips Trip[]
 
