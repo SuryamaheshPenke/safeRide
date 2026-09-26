@@ -36,13 +36,35 @@ class DriverRepository {
     });
     }
 
-    async findById(id) {
-        return prisma.driver.findUnique({
-            where: {
-                id: Number(id)
-            }
-        });
+    async findById(id, role, companyId) {
+    const where = {
+        id: Number(id)
+    };
+
+    if (role === "COMPANY_ADMIN") {
+        where.user = {
+            companyId: Number(companyId)
+        };
     }
+
+    return prisma.driver.findFirst({
+        where,
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    roleId: true,
+                    companyId: true,
+                    status: true
+                }
+            }
+        }
+    });
+}
 
     async update(id, data) {
         return prisma.driver.update({

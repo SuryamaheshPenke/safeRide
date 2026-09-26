@@ -42,7 +42,11 @@ class DriverController {
 
     async getById(req, res) {
         try {
-            const driver = await driverService.getById(req.params.id);
+            const driver = await driverService.getById(
+            req.params.id,
+            req.user.role,
+            req.user.companyId
+        );
 
             res.status(200).json({
                 success: true,

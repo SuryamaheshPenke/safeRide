@@ -10,9 +10,13 @@ class DriverService {
     return driverRepository.findAll(role, companyId);
     }
 
-    async getById(id) {
-        return driverRepository.findById(id);
-    }
+    async getById(id, role, companyId) {
+    return driverRepository.findById(
+        id,
+        role,
+        companyId
+    );
+}
 
     async update(id, data) {
         return driverRepository.update(id, data);
