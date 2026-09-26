@@ -26,81 +26,74 @@ class EmployeeRepository {
         });
     }
 
-    async findAll(page = 1, limit = 10, search = "") {
+    async findAll(page = 1, limit = 10, search = "", role, companyId) {
 
     const skip = (page - 1) * limit;
 
-    const employees = await prisma.employee.findMany({
-
-        skip,
-
-        take: Number(limit),
-
-        where: {
-
-            OR: [
-
-                {
-                    employeeCode: {
-                        contains: search,
-                        mode: "insensitive"
-                    }
-                },
-
-                {
-                    department: {
-                        contains: search,
-                        mode: "insensitive"
-                    }
-                },
-
-                {
-                    designation: {
-                        contains: search,
-                        mode: "insensitive"
-                    }
+    const where = {
+        OR: [
+            {
+                employeeCode: {
+                    contains: search,
+                    mode: "insensitive"
                 }
-
-            ]
-
-        },
-
-        include: {
-                user: {
-                    select: {
-                        id: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        phone: true,
-                        isVerified: true,
-                        lastLogin: true,
-                        status: true,
-                        roleId: true,
-                        companyId: true,
-                        createdAt: true,
-                        updatedAt: true
-                    }
+            },
+            {
+                department: {
+                    contains: search,
+                    mode: "insensitive"
                 }
-}
-
-    });
-
-    const total = await prisma.employee.count();
-
-    return {
-
-        total,
-
-        page: Number(page),
-
-        limit: Number(limit),
-
-        employees
-
+            },
+            {
+                designation: {
+                    contains: search,
+                    mode: "insensitive"
+                }
+            }
+        ]
     };
 
+    if (role === "COMPANY_ADMIN") {
+        where.user = {
+            companyId: Number(companyId)
+        };
+    }
+
+    const employees = await prisma.employee.findMany({
+        skip,
+        take: Number(limit),
+        where,
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    isVerified: true,
+                    lastLogin: true,
+                    status: true,
+                    roleId: true,
+                    companyId: true,
+                    createdAt: true,
+                    updatedAt: true
+                }
+            }
         }
+    });
+
+    const total = await prisma.employee.count({
+        where
+    });
+
+    return {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        employees
+    };
+}
 
     async findById(id) {
         return prisma.employee.findUnique({

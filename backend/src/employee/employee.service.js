@@ -6,15 +6,15 @@ class EmployeeService {
         return employeeRepository.create(data);
     }
 
-    async getAll(page, limit, search) {
-
+    async getAll(page, limit, search, role, companyId) {
     return employeeRepository.findAll(
         page,
         limit,
-        search
+        search,
+        role,
+        companyId
     );
-
-}
+    }
 
     async getById(id) {
         return employeeRepository.findById(id);
