@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-
+const verifyDriverTripOwnership = require("../middleware/driverOwnership.middleware");
 const authenticate = require("../middleware/auth.middleware");
 const authorize = require("../middleware/role.middleware");
 const validate = require("../middleware/validate.middleware");
@@ -33,12 +33,14 @@ router.put(
     "/:id/start",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
     idValidation,
     validate,
+    verifyDriverTripOwnership,
     driverTripController.startTrip
 );
 
