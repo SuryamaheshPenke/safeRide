@@ -2,22 +2,20 @@ const prisma = require("../config/prisma");
 
 class DriverTripRepository {
 
-    async findAll() {
-
-        return prisma.trip.findMany({
-
-            include: {
-                driver: true,
-                vehicle: true
-            },
-
-            orderBy: {
-                tripDate: "asc"
-            }
-
-        });
-
-    }
+   async findAll(driverId) {
+    return prisma.trip.findMany({
+        where: driverId
+            ? { driverId: Number(driverId) }
+            : undefined,
+        include: {
+            driver: true,
+            vehicle: true
+        },
+        orderBy: {
+            tripDate: "asc"
+        }
+    });
+}
 
 
     async startTrip(id) {

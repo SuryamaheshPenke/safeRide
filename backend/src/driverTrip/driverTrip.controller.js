@@ -3,26 +3,25 @@ const driverTripService = require("./driverTrip.service");
 class DriverTripController {
 
     async getAll(req, res) {
+    try {
+        const driverId =
+            req.user.role === "DRIVER"
+                ? req.driver.id
+                : undefined;
 
-        try {
+        const trips = await driverTripService.getAllTrips(driverId);
 
-            const trips = await driverTripService.getAllTrips();
-
-            return res.status(200).json({
-                success: true,
-                data: trips
-            });
-
-        } catch (error) {
-
-            return res.status(500).json({
-                success: false,
-                message: error.message
-            });
-
-        }
-
+        return res.status(200).json({
+            success: true,
+            data: trips
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
+}
 
 
     async startTrip(req, res) {

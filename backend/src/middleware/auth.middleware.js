@@ -34,7 +34,6 @@ function authenticate(req, res, next) {
             token,
             process.env.JWT_SECRET
         );
-
         req.user = decoded;
 
         next();

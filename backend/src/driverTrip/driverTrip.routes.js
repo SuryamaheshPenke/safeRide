@@ -5,6 +5,7 @@ const verifyDriverTripOwnership = require("../middleware/driverOwnership.middlew
 const authenticate = require("../middleware/auth.middleware");
 const authorize = require("../middleware/role.middleware");
 const validate = require("../middleware/validate.middleware");
+const loadDriverAccount = require("../middleware/driverAccount.middleware");
 
 const {
     idValidation,
@@ -20,10 +21,12 @@ router.get(
     "/",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER",
+        "DRIVER"
+    ),
+    loadDriverAccount,
     driverTripController.getAll
 );
 

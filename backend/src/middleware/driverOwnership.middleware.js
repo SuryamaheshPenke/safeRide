@@ -2,9 +2,14 @@ const prisma = require("../config/prisma");
 
 async function verifyDriverTripOwnership(req, res, next) {
     try {
+        if (req.user.role !== "DRIVER") {
+                return next();
+            }
         const tripId = Number(
             req.params.tripId || req.params.id
         );
+
+        
 
         if (!tripId || tripId < 1) {
             return res.status(400).json({

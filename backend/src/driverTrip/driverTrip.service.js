@@ -2,10 +2,8 @@ const driverTripRepository = require("./driverTrip.repository");
 
 class DriverTripService {
 
-    async getAllTrips() {
-
-        return driverTripRepository.findAll();
-
+    async getAllTrips(driverId) {
+    return driverTripRepository.findAll(driverId);
     }
 
 
