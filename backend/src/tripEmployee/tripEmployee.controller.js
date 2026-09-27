@@ -79,7 +79,9 @@ class TripEmployeeController {
 
             const data = await tripEmployeeService.update(
                 req.params.id,
-                req.body
+                req.body,
+                req.user.role,
+                req.user.companyId
             );
 
             res.status(200).json({

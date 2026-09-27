@@ -20,9 +20,16 @@ class TripEmployeeService {
         return tripEmployeeRepository.findById(id);
     }
 
-    async update(id, data) {
-        return tripEmployeeRepository.update(id, data);
-    }
+    async update(id, data, role, companyId) {
+
+    return tripEmployeeRepository.update(
+        id,
+        data,
+        role,
+        companyId
+    );
+
+}
 
     async delete(id) {
         return tripEmployeeRepository.delete(id);

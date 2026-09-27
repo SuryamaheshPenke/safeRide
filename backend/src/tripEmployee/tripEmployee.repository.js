@@ -139,16 +139,38 @@ async create(data, role, companyId) {
 
 
     // UPDATE
-    async update(id, data) {
+// UPDATE
+async update(id, data, role, companyId) {
+
     const tripEmployeeId = Number(id);
 
+    // Find existing assignment and its trip/vehicle
     const existingAssignment = await prisma.tripEmployee.findUnique({
-        where: { id: tripEmployeeId },
-        include: { trip: true }
+        where: {
+            id: tripEmployeeId
+        },
+        include: {
+            trip: {
+                include: {
+                    vehicle: true
+                }
+            }
+        }
     });
 
     if (!existingAssignment) {
         throw new Error("Trip employee assignment not found");
+    }
+
+    // Company Admin can only modify assignments
+    // belonging to their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        existingAssignment.trip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. This trip employee assignment does not belong to your company."
+        );
     }
 
     // Only scheduled trips can be modified
@@ -170,11 +192,27 @@ async create(data, role, companyId) {
 
     // Check target trip
     const targetTrip = await prisma.trip.findUnique({
-        where: { id: tripId }
+        where: {
+            id: tripId
+        },
+        include: {
+            vehicle: true
+        }
     });
 
     if (!targetTrip) {
         throw new Error("Trip not found");
+    }
+
+    // Company Admin can only move assignment
+    // to a trip belonging to their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        targetTrip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. The target trip does not belong to your company."
+        );
     }
 
     if (targetTrip.status !== "SCHEDULED") {
@@ -185,11 +223,28 @@ async create(data, role, companyId) {
 
     // Check employee
     const employee = await prisma.employee.findUnique({
-        where: { id: employeeId }
+        where: {
+            id: employeeId
+        },
+        include: {
+            user: true
+        }
     });
 
     if (!employee) {
         throw new Error("Employee not found");
+    }
+
+    // Company Admin can only use an employee
+    // belonging to their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        (!employee.user ||
+            employee.user.companyId !== Number(companyId))
+    ) {
+        throw new Error(
+            "Access denied. The selected employee does not belong to your company."
+        );
     }
 
     // Prevent duplicate employee assignment
@@ -197,12 +252,16 @@ async create(data, role, companyId) {
         where: {
             tripId: tripId,
             employeeId: employeeId,
-            id: { not: tripEmployeeId }
+            id: {
+                not: tripEmployeeId
+            }
         }
     });
 
     if (duplicate) {
-        throw new Error("Employee is already assigned to this trip");
+        throw new Error(
+            "Employee is already assigned to this trip"
+        );
     }
 
     // Only allow these fields to be updated
@@ -225,7 +284,9 @@ async create(data, role, companyId) {
     }
 
     return prisma.tripEmployee.update({
-        where: { id: tripEmployeeId },
+        where: {
+            id: tripEmployeeId
+        },
         data: updateData,
         include: {
             trip: true,
