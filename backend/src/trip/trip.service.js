@@ -42,8 +42,14 @@ class TripService {
     );
 
     }
-    async cancelTrip(id) {
-    return tripRepository.cancelTrip(id);
+    async cancelTrip(id, role, companyId) {
+
+    return tripRepository.cancelTrip(
+        id,
+        role,
+        companyId
+    );
+
 }
 
 }

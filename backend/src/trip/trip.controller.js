@@ -175,7 +175,11 @@ class TripController {
     }
     async cancelTrip(req, res) {
     try {
-        const trip = await tripService.cancelTrip(req.params.id);
+        const trip = await tripService.cancelTrip(
+            req.params.id,
+            req.user.role,
+            req.user.companyId
+        );
 
         res.status(200).json({
             success: true,

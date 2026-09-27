@@ -413,33 +413,49 @@ async delete(id, role, companyId) {
 }
 
     // CANCEL TRIP
-    async cancelTrip(id) {
+    // CANCEL TRIP
+async cancelTrip(id, role, companyId) {
 
-        const tripId = Number(id);
+    const tripId = Number(id);
 
-        const trip = await prisma.trip.findUnique({
-            where: {
-                id: tripId
-            }
-        });
-
-        if (!trip) {
-            throw new Error("Trip not found");
+    const trip = await prisma.trip.findUnique({
+        where: {
+            id: tripId
+        },
+        include: {
+            vehicle: true
         }
+    });
 
-        if (trip.status !== "SCHEDULED") {
-            throw new Error("Only scheduled trips can be cancelled");
-        }
-
-        return prisma.trip.update({
-            where: {
-                id: tripId
-            },
-            data: {
-                status: "CANCELLED"
-            }
-        });
+    if (!trip) {
+        throw new Error("Trip not found");
     }
+
+    // Company Admin can only cancel trips belonging
+    // to their own company
+    if (
+        role === "COMPANY_ADMIN" &&
+        trip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. This trip does not belong to your company."
+        );
+    }
+
+    // Only scheduled trips can be cancelled
+    if (trip.status !== "SCHEDULED") {
+        throw new Error("Only scheduled trips can be cancelled");
+    }
+
+    return prisma.trip.update({
+        where: {
+            id: tripId
+        },
+        data: {
+            status: "CANCELLED"
+        }
+    });
+}
 
 }
 
