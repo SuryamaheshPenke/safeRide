@@ -366,36 +366,51 @@ async update(id, data, role, companyId) {
 
 
     // DELETE TRIP
-    async delete(id) {
+    // DELETE TRIP
+async delete(id, role, companyId) {
 
-        const tripId = Number(id);
+    const tripId = Number(id);
 
-        const trip = await prisma.trip.findUnique({
-            where: {
-                id: tripId
-            }
-        });
-
-        if (!trip) {
-            throw new Error("Trip not found");
+    const trip = await prisma.trip.findUnique({
+        where: {
+            id: tripId
+        },
+        include: {
+            vehicle: true
         }
+    });
 
-        if (
-            trip.status === "STARTED" ||
-            trip.status === "COMPLETED"
-        ) {
-            throw new Error(
-                `Cannot delete a ${trip.status.toLowerCase()} trip`
-            );
-        }
-
-        return prisma.trip.delete({
-            where: {
-                id: tripId
-            }
-        });
+    if (!trip) {
+        throw new Error("Trip not found");
     }
 
+    // Company Admin can only delete trips belonging
+    // to their own company
+    if (
+        role === "COMPANY_ADMIN" &&
+        trip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. This trip does not belong to your company."
+        );
+    }
+
+    // Existing business rules
+    if (
+        trip.status === "STARTED" ||
+        trip.status === "COMPLETED"
+    ) {
+        throw new Error(
+            `Cannot delete a ${trip.status.toLowerCase()} trip`
+        );
+    }
+
+    return prisma.trip.delete({
+        where: {
+            id: tripId
+        }
+    });
+}
 
     // CANCEL TRIP
     async cancelTrip(id) {

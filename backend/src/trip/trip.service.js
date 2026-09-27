@@ -33,9 +33,13 @@ class TripService {
 
 }
 
-    async delete(id) {
+    async delete(id, role, companyId) {
 
-        return tripRepository.delete(id);
+    return tripRepository.delete(
+        id,
+        role,
+        companyId
+    );
 
     }
     async cancelTrip(id) {

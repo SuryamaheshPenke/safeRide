@@ -144,7 +144,11 @@ class TripController {
 
         try {
 
-            await tripService.delete(req.params.id);
+            await tripService.delete(
+                req.params.id,
+                req.user.role,
+                req.user.companyId
+            );
 
             res.json({
 
