@@ -12,9 +12,9 @@ class TripService {
     return tripRepository.findAll(role, companyId);
     }
 
-    async getById(id) {
+    async getById(id, role, companyId) {
 
-        return tripRepository.findById(id);
+    return tripRepository.findById(id, role, companyId);
 
     }
 

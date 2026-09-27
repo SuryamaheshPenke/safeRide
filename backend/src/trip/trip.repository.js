@@ -118,11 +118,23 @@ async create(data) {
 
 
     // GET TRIP BY ID
-    async findById(id) {
-    const trip = await prisma.trip.findUnique({
-        where: {
-            id: Number(id)
-        },
+// GET TRIP BY ID
+async findById(id, role, companyId) {
+
+    const where = {
+        id: Number(id)
+    };
+
+    // Company Admin can access only trips
+    // belonging to their company
+    if (role === "COMPANY_ADMIN") {
+        where.vehicle = {
+            companyId: Number(companyId)
+        };
+    }
+
+    const trip = await prisma.trip.findFirst({
+        where,
         include: {
             driver: true,
             vehicle: true,

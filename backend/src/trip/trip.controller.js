@@ -71,7 +71,11 @@ class TripController {
 
         try {
 
-            const trip = await tripService.getById(req.params.id);
+            const trip = await tripService.getById(
+                req.params.id,
+                req.user.role,
+                req.user.companyId
+            );
 
             res.json({
 
