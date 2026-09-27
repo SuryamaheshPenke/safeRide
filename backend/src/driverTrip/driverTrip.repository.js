@@ -20,53 +20,55 @@ class DriverTripRepository {
 
     async startTrip(id) {
 
-        return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx) => {
 
-            const trip = await tx.trip.update({
-
-                where: {
-                    id: Number(id)
-                },
-
-                data: {
-                    status: "STARTED",
-                    startTime: new Date()
-                }
-
-            });
-
-
-            await tx.driver.update({
-
-                where: {
-                    id: trip.driverId
-                },
-
-                data: {
-                    status: "ON_TRIP"
-                }
-
-            });
-
-
-            await tx.vehicle.update({
-
-                where: {
-                    id: trip.vehicleId
-                },
-
-                data: {
-                    status: "ON_TRIP"
-                }
-
-            });
-
-
-            return trip;
-
+        const trip = await tx.trip.findUnique({
+            where: {
+                id: Number(id)
+            }
         });
 
-    }
+        if (!trip) {
+            throw new Error("Trip not found.");
+        }
+
+        if (trip.status !== "SCHEDULED") {
+            throw new Error(
+                `Only a scheduled trip can be started. Current status: ${trip.status}.`
+            );
+        }
+
+        const startedTrip = await tx.trip.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                status: "STARTED",
+                startTime: new Date()
+            }
+        });
+
+        await tx.driver.update({
+            where: {
+                id: startedTrip.driverId
+            },
+            data: {
+                status: "ON_TRIP"
+            }
+        });
+
+        await tx.vehicle.update({
+            where: {
+                id: startedTrip.vehicleId
+            },
+            data: {
+                status: "ON_TRIP"
+            }
+        });
+
+        return startedTrip;
+    });
+}
 
 
     async getTripEmployees(tripId) {
