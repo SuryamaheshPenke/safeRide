@@ -38,7 +38,10 @@ class TripController {
 
         try {
 
-            const trips = await tripService.getAll();
+            const trips = await tripService.getAll(
+                req.user.role,
+                req.user.companyId
+            );
 
             res.json({
 

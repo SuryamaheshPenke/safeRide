@@ -94,14 +94,26 @@ async create(data) {
 
 
     // GET ALL TRIPS
-    async findAll() {
+    async findAll(role, companyId) {
 
-        return prisma.trip.findMany({
-            include: {
-                driver: true,
-                vehicle: true
-            }
-        });
+    const where = {};
+
+    if (role === "COMPANY_ADMIN") {
+        where.vehicle = {
+            companyId: Number(companyId)
+        };
+    }
+
+    return prisma.trip.findMany({
+        where,
+        include: {
+            driver: true,
+            vehicle: true
+        },
+        orderBy: {
+            tripDate: "asc"
+        }
+    });
     }
 
 

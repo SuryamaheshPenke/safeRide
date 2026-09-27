@@ -8,10 +8,8 @@ class TripService {
 
     }
 
-    async getAll() {
-
-        return tripRepository.findAll();
-
+    async getAll(role, companyId) {
+    return tripRepository.findAll(role, companyId);
     }
 
     async getById(id) {
