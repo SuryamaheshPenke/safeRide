@@ -3,66 +3,96 @@ const prisma = require("../config/prisma");
 class TripEmployeeRepository {
 
     // CREATE / ASSIGN EMPLOYEE
-    async create(data) {
+    // CREATE / ASSIGN EMPLOYEE
+async create(data, role, companyId) {
 
-        const tripId = Number(data.tripId);
-        const employeeId = Number(data.employeeId);
+    const tripId = Number(data.tripId);
+    const employeeId = Number(data.employeeId);
 
-        // Check trip exists
-        const trip = await prisma.trip.findUnique({
-            where: {
-                id: tripId
-            }
-        });
-
-        if (!trip) {
-            throw new Error("Trip not found");
+    // Check trip exists
+    const trip = await prisma.trip.findUnique({
+        where: {
+            id: tripId
+        },
+        include: {
+            vehicle: true
         }
+    });
 
-        // Check employee exists
-        const employee = await prisma.employee.findUnique({
-            where: {
-                id: employeeId
-            }
-        });
-
-        if (!employee) {
-            throw new Error("Employee not found");
-        }
-
-        // Check duplicate assignment
-        const existingAssignment = await prisma.tripEmployee.findFirst({
-            where: {
-                tripId: tripId,
-                employeeId: employeeId
-            }
-        });
-
-        if (existingAssignment) {
-            throw new Error(
-                "Employee is already assigned to this trip"
-            );
-        }
-
-        // Only scheduled trips can receive employees
-        if (trip.status !== "SCHEDULED") {
-            throw new Error(
-                "Employees can only be assigned to scheduled trips"
-            );
-        }
-
-        return prisma.tripEmployee.create({
-            data: {
-                ...data,
-                tripId: tripId,
-                employeeId: employeeId
-            },
-            include: {
-                trip: true,
-                employee: true
-            }
-        });
+    if (!trip) {
+        throw new Error("Trip not found");
     }
+
+    // Company Admin can only assign employees
+    // to trips belonging to their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        trip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. This trip does not belong to your company."
+        );
+    }
+
+    // Check employee exists
+    const employee = await prisma.employee.findUnique({
+        where: {
+            id: employeeId
+        },
+        include: {
+            user: true
+        }
+    });
+
+    if (!employee) {
+        throw new Error("Employee not found");
+    }
+
+    // Company Admin can only assign employees
+    // belonging to their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        (!employee.user ||
+            employee.user.companyId !== Number(companyId))
+    ) {
+        throw new Error(
+            "Access denied. The selected employee does not belong to your company."
+        );
+    }
+
+    // Check duplicate assignment
+    const existingAssignment = await prisma.tripEmployee.findFirst({
+        where: {
+            tripId: tripId,
+            employeeId: employeeId
+        }
+    });
+
+    if (existingAssignment) {
+        throw new Error(
+            "Employee is already assigned to this trip"
+        );
+    }
+
+    // Only scheduled trips can receive employees
+    if (trip.status !== "SCHEDULED") {
+        throw new Error(
+            "Employees can only be assigned to scheduled trips"
+        );
+    }
+
+    return prisma.tripEmployee.create({
+        data: {
+            ...data,
+            tripId: tripId,
+            employeeId: employeeId
+        },
+        include: {
+            trip: true,
+            employee: true
+        }
+    });
+}
 
 
     // GET ALL

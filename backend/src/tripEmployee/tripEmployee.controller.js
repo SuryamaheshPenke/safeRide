@@ -6,7 +6,12 @@ class TripEmployeeController {
 
         try {
 
-            const tripEmployee = await tripEmployeeService.assignEmployee(req.body);
+            const tripEmployee =
+            await tripEmployeeService.assignEmployee(
+                req.body,
+                req.user.role,
+                req.user.companyId
+            );
 
             res.status(201).json({
                 success: true,

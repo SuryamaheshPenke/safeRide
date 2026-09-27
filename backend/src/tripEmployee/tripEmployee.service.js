@@ -2,9 +2,15 @@ const tripEmployeeRepository = require("./tripEmployee.repository");
 
 class TripEmployeeService {
 
-    async assignEmployee(data) {
-        return tripEmployeeRepository.create(data);
-    }
+    async assignEmployee(data, role, companyId) {
+
+    return tripEmployeeRepository.create(
+        data,
+        role,
+        companyId
+    );
+
+}
 
     async getAll(driverId) {
     return tripEmployeeRepository.findAll(driverId);
