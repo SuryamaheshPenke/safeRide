@@ -10,8 +10,12 @@ class VehicleService {
     return vehicleRepository.findAll(role, companyId);
     }
 
-    async getById(id) {
-        return vehicleRepository.findById(id);
+    async getById(id, role, companyId) {
+    return vehicleRepository.findById(
+        id,
+        role,
+        companyId
+        );
     }
 
     async update(id, data) {

@@ -23,12 +23,18 @@ class VehicleRepository {
     });
     }
 
-    async findById(id) {
-        return prisma.vehicle.findUnique({
-            where: {
-                id: Number(id)
-            }
-        });
+    async findById(id, role, companyId) {
+    const where = {
+        id: Number(id)
+    };
+
+    if (role === "COMPANY_ADMIN") {
+        where.companyId = Number(companyId);
+    }
+
+    return prisma.vehicle.findFirst({
+        where
+    });
     }
 
     async update(id, data) {

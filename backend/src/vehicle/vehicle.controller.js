@@ -49,7 +49,11 @@ class VehicleController {
     async getById(req, res) {
         try {
 
-            const vehicle = await vehicleService.getById(req.params.id);
+            const vehicle = await vehicleService.getById(
+                req.params.id,
+                req.user.role,
+                req.user.companyId
+            );
 
             res.json({
                 success: true,
