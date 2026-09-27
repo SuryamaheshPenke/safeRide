@@ -110,11 +110,10 @@ class TripController {
         try {
 
             const trip = await tripService.update(
-
                 req.params.id,
-
-                req.body
-
+                req.body,
+                req.user.role,
+                req.user.companyId
             );
 
             res.json({

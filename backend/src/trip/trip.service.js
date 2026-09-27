@@ -22,11 +22,16 @@ class TripService {
 
     }
 
-    async update(id, data) {
+    async update(id, data, role, companyId) {
 
-        return tripRepository.update(id, data);
+    return tripRepository.update(
+        id,
+        data,
+        role,
+        companyId
+    );
 
-    }
+}
 
     async delete(id) {
 

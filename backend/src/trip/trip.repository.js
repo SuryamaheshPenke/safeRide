@@ -176,20 +176,38 @@ async findById(id, role, companyId) {
 
 
     // UPDATE TRIP
-    // UPDATE TRIP
-async update(id, data) {
+// UPDATE TRIP
+async update(id, data, role, companyId) {
 
     const tripId = Number(id);
 
-    // Find existing trip
+    // Find existing trip with vehicle information
     const existingTrip = await prisma.trip.findUnique({
         where: {
             id: tripId
+        },
+        include: {
+            vehicle: true,
+            driver: {
+                include: {
+                    user: true
+                }
+            }
         }
     });
 
     if (!existingTrip) {
         throw new Error("Trip not found");
+    }
+
+    // Company Admin can only update trips belonging to their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        existingTrip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. This trip does not belong to your company."
+        );
     }
 
     // Completed and cancelled trips cannot be modified
@@ -223,16 +241,29 @@ async update(id, data) {
             ? data.shift
             : existingTrip.shift;
 
-
     // Check driver
     const driver = await prisma.driver.findUnique({
         where: {
             id: driverId
+        },
+        include: {
+            user: true
         }
     });
 
     if (!driver) {
         throw new Error("Driver not found");
+    }
+
+    // Company Admin can only use a driver from their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        (!driver.user ||
+            driver.user.companyId !== Number(companyId))
+    ) {
+        throw new Error(
+            "Access denied. The selected driver does not belong to your company."
+        );
     }
 
     // If changing to a different driver, it must be available
@@ -242,7 +273,6 @@ async update(id, data) {
     ) {
         throw new Error("Driver is not available");
     }
-
 
     // Check vehicle
     const vehicle = await prisma.vehicle.findUnique({
@@ -255,6 +285,16 @@ async update(id, data) {
         throw new Error("Vehicle not found");
     }
 
+    // Company Admin can only use a vehicle from their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. The selected vehicle does not belong to your company."
+        );
+    }
+
     // If changing to a different vehicle, it must be available
     if (
         vehicleId !== existingTrip.vehicleId &&
@@ -262,7 +302,6 @@ async update(id, data) {
     ) {
         throw new Error("Vehicle is not available");
     }
-
 
     // Check driver scheduling conflict
     const driverConflict = await prisma.trip.findFirst({
@@ -285,7 +324,6 @@ async update(id, data) {
         );
     }
 
-
     // Check vehicle scheduling conflict
     const vehicleConflict = await prisma.trip.findFirst({
         where: {
@@ -307,7 +345,6 @@ async update(id, data) {
         );
     }
 
-
     // Update trip
     return prisma.trip.update({
         where: {
@@ -315,13 +352,11 @@ async update(id, data) {
         },
         data: {
             ...data,
-
             driverId: driverId,
             vehicleId: vehicleId,
             tripDate: tripDate,
             shift: shift
         },
-
         include: {
             driver: true,
             vehicle: true
