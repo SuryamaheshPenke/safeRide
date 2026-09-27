@@ -21,18 +21,6 @@ router.post(
     tripController.create
 );
 
-// Get All Trips
-router.post(
-    "/",
-    authenticate,
-    authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
-    tripController.create
-);
-
 router.get(
     "/",
     authenticate,

@@ -4,7 +4,8 @@ class TripRepository {
 
     // CREATE TRIP
     // CREATE TRIP
-async create(data) {
+// CREATE TRIP
+async create(data, role, companyId) {
 
     const driverId = Number(data.driverId);
     const vehicleId = Number(data.vehicleId);
@@ -13,11 +14,24 @@ async create(data) {
     const driver = await prisma.driver.findUnique({
         where: {
             id: driverId
+        },
+        include: {
+            user: true
         }
     });
 
     if (!driver) {
         throw new Error("Driver not found");
+    }
+
+    // Company Admin can only use a driver from their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        (!driver.user || driver.user.companyId !== Number(companyId))
+    ) {
+        throw new Error(
+            "Access denied. The selected driver does not belong to your company."
+        );
     }
 
     // Check driver availability
@@ -34,6 +48,16 @@ async create(data) {
 
     if (!vehicle) {
         throw new Error("Vehicle not found");
+    }
+
+    // Company Admin can only use a vehicle from their company
+    if (
+        role === "COMPANY_ADMIN" &&
+        vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. The selected vehicle does not belong to your company."
+        );
     }
 
     // Check vehicle availability

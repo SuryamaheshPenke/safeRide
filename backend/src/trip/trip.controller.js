@@ -6,7 +6,11 @@ class TripController {
 
         try {
 
-            const trip = await tripService.create(req.body);
+            const trip = await tripService.create(
+                req.body,
+                req.user.role,
+                req.user.companyId
+            );
 
             res.status(201).json({
 

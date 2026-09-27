@@ -2,11 +2,15 @@ const tripRepository = require("./trip.repository");
 
 class TripService {
 
-    async create(data) {
+    async create(data, role, companyId) {
 
-        return tripRepository.create(data);
+    return tripRepository.create(
+        data,
+        role,
+        companyId
+    );
 
-    }
+}
 
     async getAll(role, companyId) {
     return tripRepository.findAll(role, companyId);
