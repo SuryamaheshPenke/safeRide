@@ -8,8 +8,19 @@ class VehicleRepository {
         });
     }
 
-    async findAll() {
-        return prisma.vehicle.findMany();
+    async findAll(role, companyId) {
+    const where = {};
+
+    if (role === "COMPANY_ADMIN") {
+        where.companyId = Number(companyId);
+    }
+
+    return prisma.vehicle.findMany({
+        where,
+        orderBy: {
+            id: "asc"
+        }
+    });
     }
 
     async findById(id) {

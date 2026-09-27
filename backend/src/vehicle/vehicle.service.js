@@ -6,8 +6,8 @@ class VehicleService {
         return vehicleRepository.create(data);
     }
 
-    async getAll() {
-        return vehicleRepository.findAll();
+    async getAll(role, companyId) {
+    return vehicleRepository.findAll(role, companyId);
     }
 
     async getById(id) {

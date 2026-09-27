@@ -26,7 +26,10 @@ class VehicleController {
     async getAll(req, res) {
         try {
 
-            const vehicles = await vehicleService.getAll();
+            const vehicles = await vehicleService.getAll(
+                req.user.role,
+                req.user.companyId
+            );
 
             res.json({
                 success: true,
