@@ -38,6 +38,8 @@ model Company {
 
   users User[]
 
+  vehicles Vehicle[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -112,6 +114,10 @@ model Vehicle {
   vehicleNumber String @unique
 
   vehicleType String
+
+  companyId Int?
+
+  company Company? @relation(fields: [companyId], references: [id])
 
   capacity Int
 
