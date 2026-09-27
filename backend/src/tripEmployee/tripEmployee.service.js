@@ -31,9 +31,15 @@ class TripEmployeeService {
 
 }
 
-    async delete(id) {
-        return tripEmployeeRepository.delete(id);
-    }
+    async delete(id, role, companyId) {
+
+    return tripEmployeeRepository.delete(
+        id,
+        role,
+        companyId
+    );
+
+}
 
 }
 

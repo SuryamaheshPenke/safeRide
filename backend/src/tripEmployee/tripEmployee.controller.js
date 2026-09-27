@@ -105,7 +105,11 @@ class TripEmployeeController {
 
         try {
 
-            await tripEmployeeService.delete(req.params.id);
+            await tripEmployeeService.delete(
+                req.params.id,
+                req.user.role,
+                req.user.companyId
+            );
 
             res.status(200).json({
                 success: true,

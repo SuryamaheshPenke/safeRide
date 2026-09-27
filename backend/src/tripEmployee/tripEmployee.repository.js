@@ -297,37 +297,53 @@ async update(id, data, role, companyId) {
 
 
     // DELETE
-    async delete(id) {
+    // DELETE
+async delete(id, role, companyId) {
 
-        const tripEmployeeId = Number(id);
+    const tripEmployeeId = Number(id);
 
-        const existingAssignment =
-            await prisma.tripEmployee.findUnique({
-                where: {
-                    id: tripEmployeeId
-                },
-                include: {
-                    trip: true
-                }
-            });
-
-        if (!existingAssignment) {
-            throw new Error("Trip employee assignment not found");
-        }
-
-        // Only scheduled trips can have assignments deleted
-        if (existingAssignment.trip.status !== "SCHEDULED") {
-            throw new Error(
-                "Employee assignment can only be deleted from scheduled trips"
-            );
-        }
-
-        return prisma.tripEmployee.delete({
+    const existingAssignment =
+        await prisma.tripEmployee.findUnique({
             where: {
                 id: tripEmployeeId
+            },
+            include: {
+                trip: {
+                    include: {
+                        vehicle: true
+                    }
+                }
             }
         });
+
+    if (!existingAssignment) {
+        throw new Error("Trip employee assignment not found");
     }
+
+    // Company Admin can only delete assignments
+    // belonging to their own company
+    if (
+        role === "COMPANY_ADMIN" &&
+        existingAssignment.trip.vehicle.companyId !== Number(companyId)
+    ) {
+        throw new Error(
+            "Access denied. This trip employee assignment does not belong to your company."
+        );
+    }
+
+    // Only scheduled trips can have assignments deleted
+    if (existingAssignment.trip.status !== "SCHEDULED") {
+        throw new Error(
+            "Employee assignment can only be deleted from scheduled trips"
+        );
+    }
+
+    return prisma.tripEmployee.delete({
+        where: {
+            id: tripEmployeeId
+        }
+    });
+}
 
 }
 
