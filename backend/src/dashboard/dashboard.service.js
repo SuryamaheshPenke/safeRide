@@ -2,24 +2,39 @@ const dashboardRepository = require("./dashboard.repository");
 
 class DashboardService {
 
-    async getSummary() {
-        return dashboardRepository.getSummary();
+    async getSummary(role, companyId) {
+        return dashboardRepository.getSummary(
+            role,
+            companyId
+        );
     }
 
-    async getTodaysTrips() {
-        return dashboardRepository.getTodaysTrips();
+    async getTodaysTrips(role, companyId) {
+        return dashboardRepository.getTodaysTrips(
+            role,
+            companyId
+        );
     }
 
-    async getActiveTrips() {
-        return dashboardRepository.getActiveTrips();
+    async getActiveTrips(role, companyId) {
+        return dashboardRepository.getActiveTrips(
+            role,
+            companyId
+        );
     }
 
-    async getDriverStatus() {
-        return dashboardRepository.getDriverStatus();
+    async getDriverStatus(role, companyId) {
+        return dashboardRepository.getDriverStatus(
+            role,
+            companyId
+        );
     }
 
-    async getVehicleStatus() {
-        return dashboardRepository.getVehicleStatus();
+    async getVehicleStatus(role, companyId) {
+        return dashboardRepository.getVehicleStatus(
+            role,
+            companyId
+        );
     }
 }
 
