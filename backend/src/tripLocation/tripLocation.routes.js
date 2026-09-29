@@ -16,6 +16,7 @@ const {
 } = require("./tripLocation.validator");
 
 // Record GPS location
+// Record GPS location
 router.post(
     "/",
     authenticate,
@@ -25,6 +26,8 @@ router.post(
         "TRANSPORT_MANAGER",
         "DRIVER"
     ),
+    createTripLocationValidation,
+    validate,
     verifyDriverTripOwnership,
     tripLocationController.create
 );
