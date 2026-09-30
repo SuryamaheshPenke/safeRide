@@ -6,10 +6,14 @@ const authenticate = require("../middleware/auth.middleware");
 const authorize = require("../middleware/role.middleware");
 
 const validate = require("../middleware/validate.middleware");
-const {createLocationValidation} = require("./location.validator");
 const { idValidation } = require("../validators/id.validator");
 
 const locationController = require("./location.controller");
+
+const {
+    createLocationValidation,
+    updateLocationValidation
+} = require("./location.validator");
 
 // Create Location
 router.post(
@@ -53,11 +57,12 @@ router.put(
     "/:id",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
     idValidation,
+    updateLocationValidation,
     validate,
     locationController.update
 );

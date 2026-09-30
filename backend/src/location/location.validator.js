@@ -24,6 +24,31 @@ const createLocationValidation = [
         .withMessage("Longitude must be between -180 and 180.")
 ];
 
+const updateLocationValidation = [
+    body("name")
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage("Location name cannot be empty."),
+
+    body("address")
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage("Address cannot be empty."),
+
+    body("latitude")
+        .optional()
+        .isFloat({ min: -90, max: 90 })
+        .withMessage("Latitude must be between -90 and 90."),
+
+    body("longitude")
+        .optional()
+        .isFloat({ min: -180, max: 180 })
+        .withMessage("Longitude must be between -180 and 180.")
+];
+
 module.exports = {
-    createLocationValidation
+    createLocationValidation,
+    updateLocationValidation
 };
