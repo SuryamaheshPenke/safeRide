@@ -8,16 +8,23 @@ const authorize = require("../middleware/role.middleware");
 const driverController = require("./driver.controller");
 const validate = require("../middleware/validate.middleware");
 const { idValidation } = require("../validators/id.validator");
-const { linkUserValidation } = require("./driver.validator");
+const {
+    createDriverValidation,
+    updateDriverValidation,
+    linkUserValidation
+} = require("./driver.validator");
 
 // Create Driver
 router.post(
     "/",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
+    createDriverValidation,
+    validate,
     driverController.create
 );
 
@@ -62,10 +69,12 @@ router.put(
     "/:id",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
     idValidation,
+    updateDriverValidation,
     validate,
     driverController.update
 );

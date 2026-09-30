@@ -2,11 +2,19 @@ const prisma = require("../config/prisma");
 
 class DriverRepository {
 
-    async create(data) {
-        return prisma.driver.create({
-            data
-        });
+async create(data) {
+    const createData = {
+        ...data
+    };
+
+    if (createData.licenseExpiry) {
+        createData.licenseExpiry = new Date(createData.licenseExpiry);
     }
+
+    return prisma.driver.create({
+        data: createData
+    });
+}
 
     async findAll(role, companyId) {
     const where = {};
@@ -67,13 +75,21 @@ class DriverRepository {
 }
 
     async update(id, data) {
-        return prisma.driver.update({
-            where: {
-                id: Number(id)
-            },
-            data
-        });
+    const updateData = {
+        ...data
+    };
+
+    if (updateData.licenseExpiry) {
+        updateData.licenseExpiry = new Date(updateData.licenseExpiry);
     }
+
+    return prisma.driver.update({
+        where: {
+            id: Number(id)
+        },
+        data: updateData
+    });
+}
 
     async delete(id) {
         return prisma.driver.delete({
