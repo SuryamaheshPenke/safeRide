@@ -8,6 +8,7 @@ const { idValidation } = require("../validators/id.validator");
 const tripEmployeeController = require("./tripEmployee.controller");
 const verifyTripEmployeeOwnership = require("../middleware/tripEmployeeOwnership.middleware");
 const loadDriverAccount = require("../middleware/driverAccount.middleware");
+const TripEmployeeValidator = require("./tripEmployee.validator");
 
 
 // Get all trip employee assignments
@@ -24,6 +25,17 @@ router.post(
     "/",
     authenticate,
     authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
+    (req, res, next) => {
+        try {
+            TripEmployeeValidator.validate(req.body);
+            next();
+        } catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
     tripEmployeeController.assignEmployee
 );
 
