@@ -9,15 +9,22 @@ const { idValidation } = require("../validators/id.validator");
 
 const tripController = require("./trip.controller");
 
+const {
+    createTripValidation,
+    updateTripValidation
+} = require("./trip.validator");
+
 // Create Trip
 router.post(
     "/",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
+    createTripValidation,
+    validate,
     tripController.create
 );
 
@@ -49,11 +56,12 @@ router.put(
     "/:id",
     authenticate,
     authorize(
-    "SUPER_ADMIN",
-    "COMPANY_ADMIN",
-    "TRANSPORT_MANAGER"
-),
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
     idValidation,
+    updateTripValidation,
     validate,
     tripController.update
 );
