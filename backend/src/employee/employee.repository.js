@@ -130,15 +130,30 @@ class EmployeeRepository {
     }
 
     async update(id, data) {
-        return prisma.employee.update({
-            where: {
-                id: Number(id)
-            },
-            data,
-            include: {
-                user: true
+    return prisma.employee.update({
+        where: {
+            id: Number(id)
+        },
+        data,
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    isVerified: true,
+                    lastLogin: true,
+                    status: true,
+                    roleId: true,
+                    companyId: true,
+                    createdAt: true,
+                    updatedAt: true
+                }
             }
-        });
+        }
+    });
     }
 
     async delete(id) {

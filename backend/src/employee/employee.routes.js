@@ -10,13 +10,18 @@ const employeeController = require("./employee.controller");
 
 const validate = require("../middleware/validate.middleware");
 const {
-    createEmployeeValidation
+    createEmployeeValidation,
+    updateEmployeeValidation
 } = require("./employee.validator");
 
 router.post(
     "/",
     authenticate,
-    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
+    authorize(
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
     createEmployeeValidation,
     validate,
     employeeController.create
@@ -41,8 +46,13 @@ router.get(
 router.put(
     "/:id",
     authenticate,
-    authorize("SUPER_ADMIN", "COMPANY_ADMIN", "TRANSPORT_MANAGER"),
+    authorize(
+        "SUPER_ADMIN",
+        "COMPANY_ADMIN",
+        "TRANSPORT_MANAGER"
+    ),
     idValidation,
+    updateEmployeeValidation,
     validate,
     employeeController.update
 );
