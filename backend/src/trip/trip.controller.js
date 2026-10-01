@@ -140,7 +140,7 @@ class TripController {
 
     }
 
-    async delete(req, res) {
+async delete(req, res) {
 
     try {
 
