@@ -54,7 +54,7 @@ app.use(
         limit: "1mb"
     })
 );
-
+app.disable("x-powered-by");
 app.use("/api/test", testRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/companies", companyRoutes);
