@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
+const { verifyToken } = require("../utils/jwt");
+const prisma = require("../config/prisma");
 
-function authenticate(req, res, next) {
+async function authenticate(req, res, next) {
     const authHeader = req.headers.authorization;
 
     // Check whether Authorization header exists
@@ -30,14 +31,46 @@ function authenticate(req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
+        const decoded = verifyToken(token);
+
+        // Verify that the user still exists and is active
+        const user = await prisma.user.findUnique({
+            where: {
+                id: Number(decoded.id)
+            },
+            select: {
+                id: true,
+                email: true,
+                status: true,
+                roleId: true,
+                companyId: true
+            }
+        });
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User account not found."
+            });
+        }
+
+        if (user.status !== "ACTIVE") {
+            return res.status(403).json({
+                success: false,
+                message: "Your account is not active."
+            });
+        }
+
+        // Keep JWT identity information in req.user
         req.user = decoded;
 
+        // Store current user information separately
+        req.currentUser = user;
+
         next();
+
     } catch (error) {
+
         if (error.name === "TokenExpiredError") {
             return res.status(401).json({
                 success: false,
@@ -45,9 +78,18 @@ function authenticate(req, res, next) {
             });
         }
 
-        return res.status(401).json({
+        if (error.name === "JsonWebTokenError") {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid authentication token."
+            });
+        }
+
+        console.error("Authentication error:", error);
+
+        return res.status(500).json({
             success: false,
-            message: "Invalid authentication token."
+            message: "Internal server error."
         });
     }
 }
