@@ -19,8 +19,18 @@ class AuthRepository {
                 companyId: true,
                 createdAt: true,
                 updatedAt: true,
-                role: true,
-                company: true
+                role: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                },
+                company: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                }
             }
         });
     } catch (error) {
@@ -67,7 +77,10 @@ class AuthRepository {
 }
     async findByPhone(phone) {
     return prisma.user.findUnique({
-        where: { phone }
+        where: { phone },
+        select: {
+            id: true
+        }
     });
 }
 
