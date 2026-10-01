@@ -16,6 +16,7 @@ const tripEmployeeRoutes = require("./tripEmployee/tripEmployee.routes");
 const driverTripRoutes = require("./driverTrip/driverTrip.routes");
 const tripLocationRoutes = require("./tripLocation/tripLocation.routes");
 const dashboardRoutes = require("./dashboard/dashboard.routes");
+const errorMiddleware = require("./middleware/error.middleware");
 
 const app = express();
 
@@ -57,8 +58,7 @@ app.use((req, res) => {
 });
 
 
-const errorMiddleware = require("./middleware/error.middleware");
-
 app.use(errorMiddleware);
+
 
 module.exports = app;

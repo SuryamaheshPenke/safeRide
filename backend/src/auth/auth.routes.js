@@ -7,11 +7,13 @@ const authenticate = require("../middleware/auth.middleware");
 const validate = require("../middleware/validate.middleware");
 const {registerValidation,loginValidation} = require("./auth.validator");
 const authorize = require("../middleware/role.middleware");
+const { loginRateLimiter } = require("../middleware/rateLimit.middleware");
 
 
 // Login - Public
 router.post(
     "/login",
+    loginRateLimiter,
     loginValidation,
     validate,
     authController.login
