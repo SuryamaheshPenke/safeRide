@@ -20,7 +20,33 @@ const errorMiddleware = require("./middleware/error.middleware");
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:5173"
+];
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+
+            // Allow requests without an Origin header
+            // such as Postman or server-to-server requests
+            if (!origin) {
+                return callback(null, true);
+            }
+
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            return callback(
+                new Error("CORS policy: Origin not allowed.")
+            );
+        },
+
+        credentials: true
+    })
+);
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
