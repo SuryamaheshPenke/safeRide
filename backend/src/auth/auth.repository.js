@@ -43,14 +43,28 @@ class AuthRepository {
 }
 
     async findByEmail(email) {
-        return prisma.user.findUnique({
-            where: { email },
-            include: {
-                role: true,
-                company: true
+    return prisma.user.findUnique({
+        where: { email },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            password: true,
+            companyId: true,
+            role: {
+                select: {
+                    name: true
+                }
+            },
+            company: {
+                select: {
+                    name: true
+                }
             }
-        });
-    }
+        }
+    });
+}
     async findByPhone(phone) {
     return prisma.user.findUnique({
         where: { phone }
