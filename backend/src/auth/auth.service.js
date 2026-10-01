@@ -69,7 +69,12 @@ class AuthService {
         throw new Error("Invalid email or password");
     }
 
-    const token = generateToken(user);
+    const token = generateToken({
+    id: user.id,
+    email: user.email,
+    role: user.role.name,
+    companyId: user.companyId
+});
 
     return {
 
