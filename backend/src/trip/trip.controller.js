@@ -142,37 +142,64 @@ class TripController {
 
     async delete(req, res) {
 
-        try {
+    try {
 
-            await tripService.delete(
-                req.params.id,
-                req.user.role,
-                req.user.companyId
-            );
+        await tripService.delete(
+            req.params.id,
+            req.user.role,
+            req.user.companyId
+        );
 
-            res.json({
+        return res.status(200).json({
 
-                success: true,
+            success: true,
 
-                message: "Trip deleted successfully."
+            message: "Trip deleted successfully."
 
-            });
+        });
 
-        }
+    }
 
-        catch (error) {
+    catch (error) {
 
-            res.status(400).json({
+        // Prisma foreign key constraint error
+        if (error.code === "P2003") {
+
+            return res.status(409).json({
 
                 success: false,
 
-                message: error.message
+                message: "Cannot delete trip because it has associated records."
 
             });
 
         }
 
+        // Prisma record not found
+        if (error.code === "P2025") {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "Trip not found."
+
+            });
+
+        }
+
+        // Known business-rule errors
+        return res.status(400).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
     }
+
+}
     async cancelTrip(req, res) {
     try {
         const trip = await tripService.cancelTrip(
