@@ -12,6 +12,9 @@ const {
     tripIdValidation,
     employeeIdValidation
 } = require("../validators/id.validator");
+const {
+    pickupDropValidation
+} = require("./driverTrip.validator");
 
 const driverTripController = require("./driverTrip.controller");
 
@@ -77,6 +80,7 @@ router.put(
     ),
     tripIdValidation,
     employeeIdValidation,
+    pickupDropValidation,
     validate,
     verifyDriverTripOwnership,
     driverTripController.pickupEmployee
@@ -95,6 +99,7 @@ router.put(
     ),
     tripIdValidation,
     employeeIdValidation,
+    pickupDropValidation,
     validate,
     verifyDriverTripOwnership,
     driverTripController.dropEmployee
